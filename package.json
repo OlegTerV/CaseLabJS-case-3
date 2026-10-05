@@ -1,0 +1,46 @@
+{
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/lodash": "^4.17.25",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^26.6.2",
+    "@types/uuid": "^10.0.0",
+    "@types/winston": "^2.4.4",
+    "nodemon": "^3.1.14",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "lodash": "^4.18.1",
+    "morgan": "^1.12.1",
+    "uuid": "^14.0.2",
+    "winston": "^3.19.0",
+    "zod": "^4.6.5"
+  },
+  "name": "caselabjs-case-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start:dev": "nodemon --exec tsx src/server.ts",
+    "start:prod": "node dist/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlegTerV/CaseLabJS-case-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OlegTerV/CaseLabJS-case-2/issues"
+  },
+  "homepage": "https://github.com/OlegTerV/CaseLabJS-case-2#readme"
+}
