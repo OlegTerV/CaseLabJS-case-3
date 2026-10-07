@@ -1,18 +1,18 @@
 const {EquipmentType} = require("./equipment-type")
 const {Status} = require("./status")
 
-interface Equipment{
+export interface Equipment{
     id: string //(uuid, генерируется сервером)
+    siteId: string,
     name: string, //3–100 символов, обязательное
     type: typeof EquipmentType, //turbine | inverter | sensor | substation
-    serialNumber: string, //уникальный в пределах системы
+    serialNumber: string,
     location: {
         lat: number,
         lon: number
-    }, //{ lat: number, lon: number }
+    }, //уникальный в пределах системы
     status: typeof Status, //operational | maintenance | fault | decommissioned
     installedAt: string //ISO-дата, не в будущем
 }
 
-export type {Equipment}
 
