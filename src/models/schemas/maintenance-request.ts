@@ -6,7 +6,18 @@ const bodySchema_post = z.strictObject({
     description: z.string().max(2000),
     priority: z.enum(["low", "medium", "high", "critical"]),
     status: z.enum(["new", "in_progress", "done", "rejected"]).default("new"),
-    plannedAt: z.string().datetime().optional()
+    plannedAt: z.string().datetime().optional(),
+    authorId: z.string().guid()
+})
+
+const bodySchema_post_assignees = z.strictObject({
+    technicians: z.array(
+        z.object({
+            technicianId: z.string().guid(),
+            technicianRole: z.enum(["lead", "member"]),
+            hours: z.number().int().positive()
+        })
+    )
 })
 
 const bodySchema_patch = z.strictObject({
@@ -21,12 +32,18 @@ const paramsSchema = z.strictObject({
     requestId: z.string().guid().optional()
 })
 
+const paramsSchema_assignees = z.strictObject({
+    requestId: z.string().guid(),
+    technicianId: z.string().guid().optional()
+})
+
 const querySchema_get = z.strictObject({
     //status: z.enum(["new", "in_progress", "done", "rejected"]).optional(),
     //priority: z.enum(["low", "medium", "high", "critical"]).optional(),
     status: z.string().optional(),
     priority: z.string().optional(),
     equipmentId: z.string().optional(),
+    authorId: z.string().guid().optional(),
     plannedAt: z.string().optional(),
     sort: z.string().optional(),
     page: z.coerce.number().int().positive().default(1),
@@ -45,8 +62,20 @@ const postMaintenanceRequestSchema = {
     body: bodySchema_post
 }
 
+const postMaintenanceRequestSchema_assignees = {
+    params: paramsSchema_assignees,
+    query: z.object({}).strict(),
+    body: bodySchema_post_assignees
+}
+
 const deleteMaintenanceRequestSchema = {
     params: paramsSchema,
+    query: z.object({}).strict(),
+    body: z.object({}).strict().optional() 
+}
+
+const deleteMaintenanceRequestSchema_assignees = {
+    params: paramsSchema_assignees,
     query: z.object({}).strict(),
     body: z.object({}).strict().optional() 
 }
@@ -71,5 +100,7 @@ module.exports = {
     postMaintenanceRequestSchema, 
     deleteMaintenanceRequestSchema, 
     patchMaintenanceRequestSchema,
-    patchMaintenanceRequestStatusSchema
+    patchMaintenanceRequestStatusSchema,
+    postMaintenanceRequestSchema_assignees,
+    deleteMaintenanceRequestSchema_assignees
 }

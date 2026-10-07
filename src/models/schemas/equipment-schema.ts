@@ -7,6 +7,7 @@ const locationSchema = z.strictObject({
 
 const bodySchema_post = z.strictObject({
     name: z.string().min(3).max(100),
+    sitedId: z.string().guid(),
     type: z.enum(["turbine", "inverter", "sensor", "substation"]),
     serialNumber: z.string(),
     location: locationSchema,
@@ -21,6 +22,7 @@ const paramsSchema = z.strictObject({
 const querySchema_get = z.strictObject({
     //status: z.enum(["operational", "maintenance", "fault", "decommissioned"]).optional(),
     //type: z.enum(["turbine", "inverter", "sensor", "substation"]).optional(),
+    siteId: z.string().guid().optional(),
     status: z.string().optional(),
     type: z.string().optional(),
     serialNumber: z.string().optional(),
@@ -57,9 +59,16 @@ const patchEquipmentSchema = {
     body: bodySchema_patch
 }
 
+const getEquipmentLoad = {
+    params: z.object({}).strict().optional(),
+    query: z.object({}).strict().optional(),
+    body: z.object({}).strict().optional()
+}
+
 module.exports = {
     getEquipmentSchema, 
     postEquipmentSchema, 
     deleteEquipmentSchema, 
-    patchEquipmentSchema
+    patchEquipmentSchema,
+    getEquipmentLoad
 }
