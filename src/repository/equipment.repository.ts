@@ -1,6 +1,6 @@
 const equipmentsData = require("./../storage/equipments-data")
 const {InvalidInputError} = require("./../errors/custom-errors")
-import type equipment = require("../models/entities/equipment");
+import type {Equipment} from "../models/entities/equipment"
 
 module.exports.getAllElements = function (start: number, end: number, filterStatus: string, filterType: string, filterSerialNumber: string, filterInstalledAt: string) {
     let tempData = equipmentsData
@@ -11,6 +11,10 @@ module.exports.getAllElements = function (start: number, end: number, filterStat
     
     const currentElements = tempData.slice(start, end)
     return currentElements
+}
+
+module.exports.getAllItemsWithoutPagination = function () {
+    return equipmentsData
 }
 
 module.exports.getElementsCount = function (filterStatus: string, filterType: string, filterSerialNumber: string, filterInstalledAt: string) {
@@ -25,7 +29,7 @@ module.exports.getElementsCount = function (filterStatus: string, filterType: st
 
 module.exports.getById = function (id: string) {
     let result
-    equipmentsData.forEach((element: equipment.Equipment) => {
+    equipmentsData.forEach((element: Equipment) => {
         if (element.id == id) {result = element}
     });
     return result
@@ -70,4 +74,8 @@ function filterByProp(arrayOfFiltersByOneProp: string | undefined, prop: string,
     } else {
         return data
     }
+}
+
+module.exports.getAllSiteEquipmets = function (siteId: string) {
+    return equipmentsData.filter((it: Equipment) => it.siteId === siteId)
 }
