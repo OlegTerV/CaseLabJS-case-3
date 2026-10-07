@@ -1,5 +1,14 @@
 import type e = require("express")
-const {getItemsList, getItemById, createItem, updateItemData, deleteItemData, getWeatherForescatForWindow, getAllRequests} = require("./../services/equipment.service")
+const {
+    getItemsList, 
+    getItemById, 
+    createItem, 
+    updateItemData, 
+    deleteItemData, 
+    getWeatherForescatForWindow, 
+    getAllRequests,
+    getEquipmentLoadFromStorage
+} = require("./../services/equipment.service")
 
 function getAll (req: e.Request, res: e.Response, next: e.NextFunction) {
     try {
@@ -84,4 +93,21 @@ function getRequestsForEquipment(req: e.Request, res: e.Response, next: e.NextFu
     }
 }
 
-module.exports = {getAll, getOneById, createNew, updateItem, deleteItem, getWeatherForecastForTheWork, getRequestsForEquipment}
+function getEquipmentLoadInfo(req: e.Request, res: e.Response, next: e.NextFunction) {
+    try {
+        const result = getEquipmentLoadFromStorage()
+        res.status(200).json(result)
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = {getAll, 
+    getOneById, 
+    createNew, 
+    updateItem, 
+    deleteItem, 
+    getWeatherForecastForTheWork, 
+    getRequestsForEquipment, 
+    getEquipmentLoadInfo
+}
