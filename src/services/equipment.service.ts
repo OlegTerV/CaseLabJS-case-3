@@ -1,8 +1,10 @@
-const {getAllElements, getById, getBySerialNumber, addItem, deleteItem, getElementsCount} = require("./../repository/equipment.repository")
+const {getAllElements, getById, getBySerialNumber, addItem, deleteItem, getElementsCount, getAllItemsWithoutPagination} = require("./../repository/equipment.repository")
 const {getAllRequestsForEquipment, openRequestsForEquioment} = require("./../repository/maintenanceRequest.repository")
 const {AppError, NotFoundError, ConflictError, InvalidInputError} = require("./../errors/custom-errors")
 const {v4} = require("uuid")
 const {getWeatherForCity} = require("./api-client")
+const {getPoassportForEquipment} = require("./../repository/equipment-passport.repository")
+const {getAllEntiresForRequest} = require("./../repository/requestAssigness.repository")
 
 module.exports.getItemsList = function(queryParams: any) {
     const start = queryParams.limit * (queryParams.page - 1)
@@ -146,4 +148,30 @@ module.exports.getAllRequests = function (equipmnetId: string) {
 
     const allRequests = getAllRequestsForEquipment(equipmnetId)
     return allRequests
+}
+
+module.exports.getEquipmentLoadFromStorage = function () {
+    const allEquipments = getAllItemsWithoutPagination()
+    const result = []
+    for (const equipemnt of allEquipments) {
+        const passport = getPoassportForEquipment(equipemnt.id)
+        const allReqs = getAllRequestsForEquipment(equipemnt.id)
+        let hoursCount = 0
+        for (const req of allReqs) {
+            let hoursMax = -1
+            const allAgreesForRequest = getAllEntiresForRequest(req.id)
+            console.log(allAgreesForRequest)
+            for (const agree of allAgreesForRequest) {
+                if (parseInt(agree.hours, 10) > hoursMax) hoursMax = agree.hours
+            }
+            hoursCount += hoursMax
+        }
+        result.push({
+            "Название": equipemnt.name,
+            "Номинальная мощность": passport.ratedPower,
+            "Нагрузка на оборудование (часы * ном.мощ.)": hoursCount * parseInt(passport.ratedPower, 10)
+        })
+    }
+
+    return result
 }

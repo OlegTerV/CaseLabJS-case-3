@@ -1,8 +1,19 @@
+import type technician = require("../models/entities/technician")
+
 const {getById} = require("./../repository/equipment.repository")
 const {getAll, getMaintReqById, addNew, deleteItem, getElementsCount} = require("./../repository/maintenanceRequest.repository")
 const {v4} = require("uuid")
 const {AppError, NotFoundError, ConflictError, InvalidInputError} = require("./../errors/custom-errors")
 const logger = require("./../middlewares/logger")
+const {getTechnicianById} = require("./../repository/technician.repository")
+const {
+    setAssignee, 
+    getAllReqAssignees, 
+    getAllAssigneesForRequest, 
+    removeRequestAsigneeFromStorage, 
+    getReqAssigneeByReqIdTechId
+} = require("./../repository/requestAssigness.repository")
+const {getHistoryForReq} = require("./../repository/requestStatusHistory")
 
 module.exports.getAllItems = function (queryParams: any) {
     const start = queryParams.limit * (queryParams.page - 1)
@@ -105,4 +116,65 @@ module.exports.daleteMaintReq = function (reqId: string) {
     if (!currentMaintenanceRequest) throw new NotFoundError(`Запрос на обслуживание оборудования с id = ${reqId}`)
 
     deleteItem(currentMaintenanceRequest)
+}
+
+module.exports.postAssigneesService = function (reqId: string, body: any) {
+    const currentReq = getMaintReqById(reqId)
+    if (!currentReq) throw new NotFoundError(`id = ${reqId}`)
+    const validIds: string[] = []
+    const notValidTechnicianIds = body
+        .filter((it: any) => {
+            validIds.push(it.technicianId)
+            if (!getTechnicianById(it.technicianId)){
+                return true
+            } else return false
+        })
+        .map((it: any) => it.technicianId)
+    if (notValidTechnicianIds.length !== 0 ) throw new InvalidInputError(`Нет специалиста(ов) с id: ${notValidTechnicianIds.join(", ")}`)
+
+    const duplicates = getDuplicates(validIds)
+    if (duplicates.size !== 0) throw new InvalidInputError(`Нельзя назначить специалиста(ов) несколько раз на одну и ту же заявку. id сепциалистов: ${duplicates}`)
+
+    const assigneesIds = getAllAssigneesForRequest(reqId).map((it: technician.Technician) => it.id)
+    for (const it of validIds){
+        if (assigneesIds.includes(it)) throw new ConflictError(`Нельзя назначить специалиста с id = ${it} опять на эту же заявку`)
+    }
+
+    body.forEach((it: any) => {
+        setAssignee(it, reqId)
+    });
+
+    return getAllReqAssignees()
+}
+
+module.exports.removeRequestAsignee = function (reqId: string, technicianId: string) {
+    const currentReq = getMaintReqById(reqId)
+    if (!currentReq) throw new NotFoundError(`Запрос с id = ${reqId}`)
+
+    const currentTechnician = getTechnicianById(technicianId)
+    if (!currentTechnician) throw new NotFoundError(`Специалист с id = ${technicianId}`)
+
+    const requestAssignee = getReqAssigneeByReqIdTechId(reqId, technicianId)
+    if (!requestAssignee) throw new ConflictError(`Специалист с id = ${technicianId} не назначен на заявку с id = ${reqId}`)
+
+    removeRequestAsigneeFromStorage(requestAssignee)
+}
+
+module.exports.getHistoryForRequestStatus = function (reqId: string) {
+    const currentReq = getMaintReqById(reqId)
+    if (!currentReq) throw new NotFoundError(`Запрос с id = ${reqId}`)
+    
+    return getHistoryForReq(reqId)
+}
+
+function getDuplicates (arr: string[]) { //method genered by Gemini
+    const temp = new Set()
+    const duplicates = new Set()
+
+    for (const element of arr) {
+        if (temp.has(element)) duplicates.add(element)
+        else temp.add(element)
+    }
+
+    return duplicates
 }
