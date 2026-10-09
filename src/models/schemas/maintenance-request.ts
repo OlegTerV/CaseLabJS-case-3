@@ -91,6 +91,8 @@ const patchMaintenanceRequestStatusSchema = {
     query: z.object({}).strict(),
     body: z.strictObject({
         status: z.enum(["new", "in_progress", "done", "rejected"]),
+        changeAuthor: z.string().guid(),
+        comment: z.string().min(5)
     })
 }
 
