@@ -66,10 +66,17 @@ class RequestTimedOut extends AppError{
     }
 }
 
+class UnprocessableEntity extends AppError{
+    constructor(message: string) {
+        super(message, {status: 422, code: "unprocessable entity"})
+    }
+}
+
 module.exports = {AppError,
 NotFoundError,
 ValidationError,
 ConflictError,
 TooManyRequestsError,
 InvalidInputError,
-RequestTimedOut}
+RequestTimedOut,
+UnprocessableEntity}
