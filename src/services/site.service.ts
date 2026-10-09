@@ -7,6 +7,7 @@ const {InvalidInputError, NotFoundError} = require("./../errors/custom-errors")
 const {getAllSiteEquipmets} = require("./../repository/equipment.repository")
 const {getAllRequestsForEquipment} = require("./../repository/maintenanceRequest.repository")
 const {getAllEntiresForRequest} = require("./../repository/requestAssigness.repository")
+
 module.exports.getInfo = function (siteId: string){
     const currentSite = getSiteById(siteId)
     if (!currentSite) throw new NotFoundError(`Сектор с id = ${siteId}`)
@@ -17,6 +18,48 @@ module.exports.getInfo = function (siteId: string){
     for (const equip of allSiteEquipments) {
         allSiteRequests.push(...getAllRequestsForEquipment(equip.id))
     }
+
+    const options = ["low", "medium", "high", "critical"]
+    const response: Record<string, any> = {}
+    for (const priority of options) {
+        const requestsWithPriority = allSiteRequests.filter((it: MaintenanceRequest) => it.priority === priority)
+        const newReq: MaintenanceRequest[] =[]
+        const inProgressReq: MaintenanceRequest[] =[]
+        const rejectedReq: MaintenanceRequest[] =[]
+        const doneReq: MaintenanceRequest[] = []
+        let countClosedOrRejectedReqs = 0
+        let hoursCount = 0
+        for (const req of requestsWithPriority) {
+            switch (req.status) {
+                case "new": 
+                    newReq.push(req); 
+                    break;
+                case "in_progress": 
+                    inProgressReq.push(req); 
+                    break;
+                case "rejected": 
+                    countClosedOrRejectedReqs+=1
+                    hoursCount+= ((new Date(req.updatedAt).getTime() - new Date(req.createdAt).getTime())/1000/60/60)
+                    rejectedReq.push(req); 
+                    break;
+                case "done": 
+                    countClosedOrRejectedReqs+=1
+                    hoursCount+= ((new Date(req.updatedAt).getTime() - new Date(req.createdAt).getTime())/1000/60/60)
+                    doneReq.push(req); 
+                    break;
+            }
+        }
+
+        response[priority] = {
+            "Количество заявок статуса 'new'": `${newReq.length}`,
+            "Количество заявок статуса 'in_progress'": `${inProgressReq.length}`,
+            "Количество заявок статуса 'rejected'": `${rejectedReq.length}`,
+            "Количество заявок статуса 'done'": `${doneReq.length}`,
+            "Среднее количество часов, затраченное на закрытие заявки (перевод в статус done, rejected)": `${Math.round(hoursCount/countClosedOrRejectedReqs)}`
+        }
+    }
+
+/*
     const newReq: MaintenanceRequest[] =[]
     const inProgressReq: MaintenanceRequest[] =[]
     const rejectedReq: MaintenanceRequest[] =[]
@@ -44,13 +87,7 @@ module.exports.getInfo = function (siteId: string){
                 avgDoneReq += averageTimeForReq(req)
                 break;
         }
-    }
-    const response = {
-        "Количество заявок статуса 'new' / среднее время закрытия": `${newReq.length} / ${Math.round(avgNewReq/newReq.length)}`,
-        "Количество заявок статуса 'in_progress' / среднее время закрытия": `${inProgressReq.length} / ${Math.round(avgInProgressReq/inProgressReq.length)}`,
-        "Количество заявок статуса 'rejected' / среднее время закрытия": `${rejectedReq.length} / ${Math.round(avgRejectedReq/rejectedReq.length)}`,
-        "Количество заявок статуса 'done' / среднее время закрытия": `${doneReq.length} / ${Math.round(avgDoneReq/doneReq.length)}`,
-    }
+    }*/
 
     return response
 }
