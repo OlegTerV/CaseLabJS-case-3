@@ -6,7 +6,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "2af219d7-4c9b-4128-a20c-1c3c49c7a628",
     oldStatus: "",
     newStatus: "new",
-    changeAuthor: "Иванов Иван Иванович",
+    changeAuthor: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01",
     comment: "Заявка создана",
     createdAt: "2026-09-10T15:30:00.000Z"
   },
@@ -15,7 +15,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "3bf32ae8-5d0c-4239-b13d-2d4d5ad8b739",
     oldStatus: "new",
     newStatus: "in_progress",
-    changeAuthor: "Петров Пётр Петрович",
+    changeAuthor: "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d02",
     comment: "Начато плановое ТО",
     createdAt: "2026-10-03T14:10:00.000Z"
   },
@@ -24,7 +24,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "6ef65d1b-803f-456c-e460-5a708d0b1ea6",
     oldStatus: "new",
     newStatus: "in_progress",
-    changeAuthor: "Иванов Иван Иванович",
+    changeAuthor: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01",
     comment: "Осмотр начат",
     createdAt: "2026-09-25T10:10:00.000Z"
   },
@@ -33,7 +33,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "6ef65d1b-803f-456c-e460-5a708d0b1ea6",
     oldStatus: "in_progress",
     newStatus: "done",
-    changeAuthor: "Иванов Иван Иванович",
+    changeAuthor: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01",
     comment: "Осмотр завершён, замечаний нет",
     createdAt: "2026-09-25T15:40:00.000Z"
   },
@@ -42,7 +42,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "5df54c0a-7f2e-445b-d35f-4f6f7cfa0d95",
     oldStatus: "",
     newStatus: "new",
-    changeAuthor: "Кузнецов Олег Викторович",
+    changeAuthor: "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f04",
     comment: "Заявка создана",
     createdAt: "2026-10-04T16:45:00.000Z"
   },
@@ -51,7 +51,7 @@ const reqStatHistoryEntriesStorage: reqStatHistoryEntry.ReqStatHistoryEntry[] = 
     requestId: "2af219d7-4c9b-4128-a20c-1c3c49c7a628",
     oldStatus: "new",
     newStatus: "new",
-    changeAuthor: "Иванов Иван Иванович",
+    changeAuthor: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01",
     comment: "Добавлен комментарий по объёму работ",
     createdAt: "2026-09-19T15:30:00.000Z"
   }

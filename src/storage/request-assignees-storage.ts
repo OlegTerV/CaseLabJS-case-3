@@ -1,6 +1,6 @@
-import type requestAssignees = require("./../models/entities/request-assignees")
+import type {RequestAssignees} from "./../models/entities/request-assignees"
 
-const requestAssigneesStorage: requestAssignees.RequestAssignees[] = [
+const requestAssigneesStorage: RequestAssignees[] = [
   {
     id: "7fa76e2c-9140-467d-f571-6b819e1c2fb7",
     technicianId: "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c01",
