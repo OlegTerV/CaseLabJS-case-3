@@ -5,6 +5,7 @@ const {v4} = require("uuid")
 const {getWeatherForCity} = require("./api-client")
 const {getPoassportForEquipment} = require("./../repository/equipment-passport.repository")
 const {getAllEntiresForRequest} = require("./../repository/requestAssigness.repository")
+import type {MaintenanceRequest} from "./../models/entities/maintenance-request"
 
 module.exports.getItemsList = function(queryParams: any) {
     const start = queryParams.limit * (queryParams.page - 1)
@@ -156,20 +157,31 @@ module.exports.getEquipmentLoadFromStorage = function () {
     for (const equipemnt of allEquipments) {
         const passport = getPoassportForEquipment(equipemnt.id)
         const allReqs = getAllRequestsForEquipment(equipemnt.id)
+        const countReqs = allReqs.length
+        const countDoneOrRejectedReqs = allReqs.filter((it: MaintenanceRequest) => it.status === "done" || it.status === "rejected").length
         let hoursCount = 0
+        let lastDateUpdated = -1
         for (const req of allReqs) {
-            let hoursMax = -1
+            //let hoursMax = -1
             const allAgreesForRequest = getAllEntiresForRequest(req.id)
-            console.log(allAgreesForRequest)
             for (const agree of allAgreesForRequest) {
-                if (parseInt(agree.hours, 10) > hoursMax) hoursMax = agree.hours
+                //if (parseInt(agree.hours, 10) > hoursMax) hoursMax = agree.hours
+                hoursCount += parseInt(agree.hours, 10)
             }
-            hoursCount += hoursMax
+            if (req.status === "done") {
+                if (new Date(req.updatedAt).getTime() > lastDateUpdated) lastDateUpdated = new Date(req.updatedAt).getTime()
+            }
+            //hoursCount += hoursMax
         }
         result.push({
             "Название": equipemnt.name,
             "Номинальная мощность": passport.ratedPower,
-            "Нагрузка на оборудование (часы * ном.мощ.)": hoursCount * parseInt(passport.ratedPower, 10)
+            "Общее число заявок": countReqs,
+            "Количество закрытых заявок (done, rejected)": countDoneOrRejectedReqs,
+            "Трудозатраты в часах": hoursCount,
+            "Дата последнего обслуживания (заявки в статусе done)": lastDateUpdated !== -1 ? new Date(lastDateUpdated) : "-"
+            ///TODO дата последнего обслуживания
+            //"Нагрузка на оборудование (часы * ном.мощ.)": hoursCount * parseInt(passport.ratedPower, 10)
         })
     }
 
