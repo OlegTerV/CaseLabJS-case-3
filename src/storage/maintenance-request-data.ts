@@ -60,6 +60,18 @@ const maintenanceRequestsStorage: maintenanceRequest.MaintenanceRequest[] = [
         authorId: "Иванов Иван Иванович",
         createdAt: "2026-09-15T10:00:00.000Z",
         updatedAt: "2026-09-25T15:40:00.000Z"
+    },
+    {
+        id: "1ef11d1b-813f-456c-e460-5a708d0b1ea1",
+        equipmentId: "4e55b0d2-5024-4d2d-9d4d-d7c4a6ad64bf",
+        title: "Замена проовдки",
+        description: "Так надо",
+        priority: "medium",
+        status: "new",
+        plannedAt: "2026-09-25T10:00:00.000Z",
+        authorId: "Иванов Иван Иванович",
+        createdAt: "2026-09-15T10:00:00.000Z",
+        updatedAt: "2026-09-25T15:40:00.000Z"
     }
 ]
 
