@@ -77,5 +77,6 @@ function filterByProp(arrayOfFiltersByOneProp: string | undefined, prop: string,
 }
 
 module.exports.getAllSiteEquipmets = function (siteId: string) {
-    return equipmentsData.filter((it: Equipment) => it.siteId === siteId)
+    const allSiteEquipments = equipmentsData.filter((it: Equipment) => it.siteId === siteId)
+    return allSiteEquipments
 }
